@@ -5,8 +5,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default async function TopNavbar() {
   return (
-    <nav className="fixed top-0 left-0 border-b-2">
-      <div className="flex flex-row justify-between items-center w-screen p-4">
+    <nav className="w-full border-b-2">
+      <div className="flex flex-row justify-between items-center w-full p-4">
         <Menu />
         <Link href="/">
           <div className="flex flex-row items-center">
