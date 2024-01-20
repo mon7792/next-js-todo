@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 
 import "./globals.css";
 import TopNavbar from "@/components/section/navbar/top";
+import SideBar from "@/components/section/navbar/side";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,9 +22,12 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={inter.className}>
-          <TopNavbar />
-          {children}
-          </body>
+          {/* <TopNavbar /> */}
+          <div>
+            <SideBar />
+            <div className="p-4 mt-[74px] sm:ml-64">{children}</div>
+          </div>
+        </body>
       </html>
     </ClerkProvider>
   );
