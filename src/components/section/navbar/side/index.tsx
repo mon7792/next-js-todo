@@ -6,19 +6,20 @@ import { cn } from "@/lib/utils";
 
 type SideBarProps = {
   className?: string;
+  isOpen?: boolean;
 };
 
-export default function SideBar({ className }: SideBarProps) {
+export default function SideBar({ className, isOpen=true }: SideBarProps) {
   const pathName = usePathname();
 
   return (
     <aside
       id="sidebar-multi-level-sidebar"
       className={cn(
-        "fixed top-0 left-0 z-40 w-[72px] h-screen transition-transform -translate-x-full sm:translate-x-0",
+        "fixed top-0 left-0 z-40 w-[72px] h-screen transition-transform",
+        isOpen ? "translate-x-0" : "-translate-x-full",
         className
       )}
-      data-drawer="sidebar-multi-level-sidebar"
       aria-label="sidebar-multi-level-sidebar"
     >
       <div className="h-full px-3 py-4 overflow-y-auto border-r-2">
