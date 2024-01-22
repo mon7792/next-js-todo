@@ -1,4 +1,4 @@
-export type Todo = {
+export type Note = {
   uid: string;
   title: string;
   description: string;

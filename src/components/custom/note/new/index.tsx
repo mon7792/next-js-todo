@@ -56,7 +56,7 @@ const createNewNotes = async (values: any) => {
     formData.append("title", values.title);
     formData.append("description", values.description);
     formData.append("receipt", values.receipt);
-    const res = await fetch("/api/notes", {
+    const res = await fetch("/api/note", {
       method: "POST",
       body: formData,
     });
