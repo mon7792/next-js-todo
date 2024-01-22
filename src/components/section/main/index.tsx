@@ -13,9 +13,9 @@ export default function Main({
   return (
     <main
       className={cn(
+        "p-4",
         isSidebarOpen ? "ml-[72px]" : "ml-0",
-        "transition-transform",
-        "container px-4",
+        "transition-transform duration-300",
         className
       )}
     >
