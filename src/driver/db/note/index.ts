@@ -6,6 +6,12 @@ insert into todo (uid, title, description, receipt, user_uid)
 values ($1, $2, $3, $4, $5);
 `;
 
+const getNoteQry = `
+select uid, title, description
+from todo
+order by created_at desc
+`;
+
 // error
 const errInsertNote = new Error("Note not inserted");
 
@@ -28,3 +34,15 @@ export const insertNote = async (note: Note, userUID: string) => {
     client.release();
   }
 };
+
+
+export const getNotes = async () => {
+  const client = await pool.connect();
+  console.log("database hit");
+  try {
+    const res = await client.query(getNoteQry);
+    return res.rows;
+  } finally {
+    client.release();
+  }
+}

@@ -1,14 +1,12 @@
-import { UserButton } from "@clerk/nextjs";
-import NewNotesForm from "@/components/custom/note/new";
 import NoteList from "@/components/section/note/list";
-// import { uploadFile } from "@/utils/server-action/upload-file";
+import { getCachedNotes } from "@/driver/cache/note";
+import { Note } from "@/types/note";
 
-export default function Page() {
+export default async function Page() {
+  const notes: Note[] = await getCachedNotes();
   return (
     <div>
-      {/* <NewNotesForm />
-      <UserButton afterSignOutUrl="/" /> */}
-      <NoteList />
+      <NoteList notes={notes} />
     </div>
   );
 }
