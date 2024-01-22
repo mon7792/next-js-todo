@@ -29,7 +29,7 @@ export default function SideBar({ className, isOpen=true }: SideBarProps) {
             icon={Lightbulb}
             tip="Notes"
             href="/"
-            isActive={"/" === pathName}
+            isActive={"/" === pathName || pathName.split("/").includes("note")}
           />
           {/* Reminder */}
           <NavBtn
