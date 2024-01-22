@@ -4,5 +4,4 @@ export type Note = {
   description: string;
   completed: boolean;
   receipt: string;
-  done: boolean;
 };
