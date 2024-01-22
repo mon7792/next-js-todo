@@ -7,6 +7,8 @@ import {
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
 import * as z from "zod";
+import { insertTodo } from "@/driver/db/todo";
+import { Todo } from "@/types/todo";
 
 export async function GET(request: NextRequest) {
   //   const data = await request.formData();
@@ -47,7 +49,7 @@ const NewNotesFormSchema = z.object({
   description: z.string().min(3, {
     message: "description must be at least 3 characters.",
   }),
-  
+
   receipt: z
     .custom<File>()
     .refine((file) => {
@@ -68,6 +70,16 @@ export async function POST(request: NextRequest) {
     // 1. parse payload
     const newNotes = NewNotesFormSchema.parse(formPayload);
 
+    const todo: Todo = {
+      uid: "uid-123",
+      title: newNotes.title,
+      description: newNotes.description,
+      completed: false,
+      receipt: "",
+      done: false,
+    };
+
+    await insertTodo(todo, "uid-123");
 
     // 2. input sanitization
 
