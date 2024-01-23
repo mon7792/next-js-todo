@@ -4,5 +4,6 @@ export type Note = {
   description: string;
   completed?: boolean;
   receipt?: string;
+  receiptFileName?: string;
   receiptFile?: File | undefined;
 };

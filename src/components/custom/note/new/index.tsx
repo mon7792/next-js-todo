@@ -38,11 +38,10 @@ const NewNotesFormSchema = z.object({
     .refine((file) => {
       return file.size <= 1 * 1024 * 1024;
     }, `File size should be less than 1mb.`)
-
-    // .refine(
-    //   (file) => [".jpg", ".jpeg", "png"].includes(file.type),
-    //   "Only these types are allowed .jpg, .jpeg, .png, .webp and mp4"
-    // )
+    .refine(
+      (file) => ["image/jpg", "image/jpeg", "image/png"].includes(file.type),
+      "Only these types are allowed .jpg, .jpeg, and .png"
+    )
     .optional(),
 });
 
@@ -96,6 +95,7 @@ export default function NewNotesForm({ onNoteCreate }: NewNotesFormProps) {
   // onSubmit handles form control and post and handle data.
   const onSubmit = async (values: NewNotesFormType) => {
     try {
+      console.log(values.receiptFile);
       form.control._disableForm(true);
       // TODO: proper error handling
       const nwNote: Note = {
@@ -105,16 +105,16 @@ export default function NewNotesForm({ onNoteCreate }: NewNotesFormProps) {
       };
 
       const result: ApiResponse = await createNewNotesRequest(nwNote);
-      console.log(result);
 
       if (result.success) {
         formReset();
 
         form.control._disableForm(false);
-        // router.push("/");
+        
         onNoteCreate();
         toast(result.message);
         // TODO: navigate to newly created note
+        router.push(`/note/${result.id}`);
       } else {
         form.control._disableForm(false);
 

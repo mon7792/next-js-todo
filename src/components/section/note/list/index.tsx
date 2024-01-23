@@ -9,8 +9,8 @@ export default function NoteList({ notes }: NoteListProps) {
     <div className="mt-4 grid gap-4 lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-2">
       {notes.map((note) => (
         <NoteCard
-          key={note.uid}
-          uid={note.uid}
+          key={note.uid as string}
+          uid={note.uid as string}
           title={note.title}
           description={note.description}
         />
