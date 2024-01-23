@@ -1,5 +1,5 @@
 "use client";
-import axios from "axios";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -7,13 +7,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+
 import {
   Form,
   FormControl,
@@ -22,6 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -109,80 +104,72 @@ export default function NewNotesForm() {
   };
 
   return (
-    <Card className="w-[350px]">
-      <CardHeader>
-        <CardTitle>Notes</CardTitle>
-        <CardDescription>Your thoughts...</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            {/* title */}
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-base">Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="your note title" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {/* title */}
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-base">Title</FormLabel>
+              <FormControl>
+                <Input placeholder="your note title" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            {/* description */}
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-base">Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Tell us about your purchase..."
-                      className="resize-none"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        {/* description */}
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-base">Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Tell us about your purchase..."
+                  className="resize-none"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            {/* file upload */}
-            <FormField
-              control={form.control}
-              name="receipt"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-base">Receipt</FormLabel>
-                  <FormControl>
-                    <input
-                      type="file"
-                      onChange={(e) => field.onChange(e.target.files)}
-                      onBlur={field.onBlur}
-                      name={field.name}
-                      disabled={field.disabled}
-                      ref={field.ref}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        {/* file upload */}
+        <FormField
+          control={form.control}
+          name="receipt"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-base">Receipt</FormLabel>
+              <FormControl>
+                <input
+                  type="file"
+                  onChange={(e) => field.onChange(e.target.files)}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  disabled={field.disabled}
+                  ref={field.ref}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <div className="flex justify-between">
-              <Button type="button" variant="outline" onClick={onReset}>
-                Reset
-              </Button>
+        <div className="flex justify-between">
+          <Button type="button" variant="outline" onClick={onReset}>
+            Reset
+          </Button>
 
-              <Button type="submit">Submit</Button>
-            </div>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+          <Button type="submit">Submit</Button>
+        </div>
+      </form>
+    </Form>
   );
 }

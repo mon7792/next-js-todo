@@ -4,7 +4,13 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import NoteDetail from "@/components/custom/note/detail";
 
-export default function NoteDetailSection() {
+import { Note } from "@/types/note";
+
+type NoteDetailSectionProps = {
+  note: Note;
+};
+
+export default function NoteDetailSection({ note }: NoteDetailSectionProps) {
   return (
     <>
       <Link href="/">
@@ -13,7 +19,7 @@ export default function NoteDetailSection() {
         </Button>
       </Link>
       <div className="mt-4">
-        <NoteDetail />
+        <NoteDetail note={note} />
       </div>
     </>
   );

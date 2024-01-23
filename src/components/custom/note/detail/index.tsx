@@ -6,16 +6,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export default function NoteDetail() {
+import { Note } from "@/types/note";
+
+type NoteDetailProps = {
+  note: Note;
+};
+
+export default function NoteDetail({ note }: NoteDetailProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Notes</CardTitle>
+        <CardTitle>{note.title}</CardTitle>
       </CardHeader>
       <CardContent>
-        
-        <CardDescription>Your thoughts...</CardDescription>
-
+        <CardDescription>{note.description}</CardDescription>
       </CardContent>
     </Card>
   );
