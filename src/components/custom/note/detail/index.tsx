@@ -8,6 +8,8 @@ import {
 
 import { Note } from "@/types/note";
 
+import Image from "next/image";
+
 type NoteDetailProps = {
   note: Note;
 };
@@ -20,6 +22,7 @@ export default function NoteDetail({ note }: NoteDetailProps) {
       </CardHeader>
       <CardContent>
         <CardDescription>{note.description}</CardDescription>
+        <Image width={200} height={200} src="/api/note/receipt" alt={note.title} />
       </CardContent>
     </Card>
   );
