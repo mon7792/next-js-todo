@@ -21,6 +21,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Note } from "@/types/note";
 import { createNewNotesRequest } from "@/api/note";
+import { ApiResponse } from "@/types/api";
+import { convApiRspToZodError, isZodError } from "@/utils/error/zod";
 
 const NewNotesFormSchema = z.object({
   title: z.string().min(3, {
@@ -36,6 +38,7 @@ const NewNotesFormSchema = z.object({
     .refine((file) => {
       return file.size <= 1 * 1024 * 1024;
     }, `File size should be less than 1mb.`)
+
     // .refine(
     //   (file) => [".jpg", ".jpeg", "png"].includes(file.type),
     //   "Only these types are allowed .jpg, .jpeg, .png, .webp and mp4"
@@ -45,15 +48,18 @@ const NewNotesFormSchema = z.object({
 
 type NewNotesFormType = z.infer<typeof NewNotesFormSchema>;
 
-
 const defFormVal = {
   title: "",
   description: "",
   receiptFile: undefined,
 };
 
+type NewNotesFormProps = {
+  onNoteCreate: () => void;
+};
+
 // NewNotesForm
-export default function NewNotesForm() {
+export default function NewNotesForm({ onNoteCreate }: NewNotesFormProps) {
   const router = useRouter();
 
   // Define form.
@@ -64,6 +70,18 @@ export default function NewNotesForm() {
 
   // fileInputRef is patch used to reset the file input
   const fileInputRef = useRef<(() => void) | HTMLInputElement | null>(null);
+
+  // applyZodError apply zod error to form
+  const applyZodError = (form: any, err: z.ZodError): void => {
+    const flatten = err.flatten();
+
+    Object.keys(flatten.fieldErrors).forEach((key) => {
+      form.setError(key as keyof NewNotesFormType, {
+        type: "manual",
+        message: flatten.fieldErrors[key]?.join(""),
+      });
+    });
+  };
 
   // formReset reset form and file input
   const formReset = () => {
@@ -85,24 +103,39 @@ export default function NewNotesForm() {
         description: values.description,
         receiptFile: values.receiptFile,
       };
-      
-      const result = await createNewNotesRequest(nwNote);
+
+      const result: ApiResponse = await createNewNotesRequest(nwNote);
       console.log(result);
-      
-      // TODO: send the response to the server
-      toast("Notes has been created.");
-      formReset();
-  
-      form.control._disableForm(false);
-  
-      // router.push("/tools/expense-tracker");
 
+      if (result.success) {
+        formReset();
+
+        form.control._disableForm(false);
+        // router.push("/");
+        onNoteCreate();
+        toast(result.message);
+        // TODO: navigate to newly created note
+      } else {
+        form.control._disableForm(false);
+
+        // convert api error to zod error
+        const resErr = convApiRspToZodError(result.error);
+        if (!resErr) {
+          toast.error(result.message);
+          return;
+        }
+
+        // apply zod error to form
+        if (isZodError(resErr)) {
+          applyZodError(form, resErr);
+        }
+
+        toast.error(result.message);
+      }
     } catch (err) {
-
       form.control._disableForm(false);
       console.log(err);
     }
-   
   };
 
   // 3. Render your form.

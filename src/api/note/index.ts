@@ -1,6 +1,7 @@
+import { ApiResponse } from "@/types/api";
 import { Note } from "@/types/note";
 
-export const createNewNotesRequest = async (note: Note) => {
+export const createNewNotesRequest = async (note: Note): Promise<ApiResponse> => {
   //  prepare note form data
   const formData = new FormData();
   formData.append("title", note.title);

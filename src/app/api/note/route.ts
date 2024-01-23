@@ -33,10 +33,10 @@ const NewNotesFormSchema = z.object({
     .refine((file) => {
       return file.size <= 1 * 1024 * 1024;
     }, `File size should be less than 1MB.`)
-    // .refine(
-    //   (file) => [".jpg", ".jpeg", "png"].includes(file.type),
-    //   "Only these types are allowed .jpg, .jpeg, .png, .webp and mp4"
-    // )
+    .refine(
+      (file) => [".jpg", ".jpeg", "png"].includes(file.type),
+      "Only these types are allowed .jpg, .jpeg, .png, .webp and mp4"
+    )
     .optional(),
 });
 
@@ -49,6 +49,7 @@ export async function POST(request: NextRequest) {
     const newNotes = NewNotesFormSchema.parse(formPayload);
 
     console.log("new-NOtes:",newNotes);
+
     // const note: Note = {
     //   uid: "uid-123",
     //   title: newNotes.title,
@@ -101,8 +102,16 @@ export async function POST(request: NextRequest) {
   
 
     return NextResponse.json(response);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(`form not submitted ${error}`);
-    return NextResponse.json({ success: false });
+
+    //   return result;
+    const response: ApiResponse = {
+      success: false,
+      message: "Note creation Failed",
+      error: (error as Error),
+    };
+
+    return NextResponse.json(response);
   }
 }
