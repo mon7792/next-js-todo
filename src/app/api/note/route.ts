@@ -9,6 +9,7 @@ import {
 import * as z from "zod";
 import { insertNote } from "@/driver/db/note";
 import { Note } from "@/types/note";
+import { ApiResponse } from "@/types/api";
 
 export async function GET(request: NextRequest) {
   // TODO: get user id from session clerk js
@@ -92,7 +93,14 @@ export async function POST(request: NextRequest) {
     // console.log(file.name)
 
     //   return result;
-    return NextResponse.json({ success: true });
+    const response: ApiResponse = {
+      success: true,
+      message: "Note created successfully",
+      id: "note-123"
+    };
+  
+
+    return NextResponse.json(response);
   } catch (error) {
     console.error(`form not submitted ${error}`);
     return NextResponse.json({ success: false });
