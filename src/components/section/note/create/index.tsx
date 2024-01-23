@@ -24,16 +24,10 @@ export default function CreateNoteSection() {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Notes</DialogTitle>
-          <DialogDescription>
-          Your thoughts...
-          </DialogDescription>
+          <DialogDescription>Your thoughts...</DialogDescription>
         </DialogHeader>
         <NewNotesForm />
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
-

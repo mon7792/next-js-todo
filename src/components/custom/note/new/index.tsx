@@ -1,5 +1,5 @@
 "use client";
-
+import { useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -19,21 +19,23 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Note } from "@/types/note";
+import { createNewNotesRequest } from "@/api/note";
 
 const NewNotesFormSchema = z.object({
   title: z.string().min(3, {
     message: "Title must be at least 3 characters.",
   }),
   description: z.string().min(3, {
-    message: "description must be at least 3 characters.",
+    message: "Description must be at least 3 characters.",
   }),
-  receipt: z
+  receiptFile: z
     .custom<FileList>()
     .refine((fileList) => fileList.length === 1, "Expected file")
     .transform((file) => file[0] as File)
     .refine((file) => {
       return file.size <= 1 * 1024 * 1024;
-    }, `File size should be less than 1gb.`)
+    }, `File size should be less than 1mb.`)
     // .refine(
     //   (file) => [".jpg", ".jpeg", "png"].includes(file.type),
     //   "Only these types are allowed .jpg, .jpeg, .png, .webp and mp4"
@@ -43,64 +45,70 @@ const NewNotesFormSchema = z.object({
 
 type NewNotesFormType = z.infer<typeof NewNotesFormSchema>;
 
-const createNewNotes = async (values: any) => {
-  // axios to post request to path /api/web/tools/montra/account
-  // TODO: add proper error handling
-  try {
-    const formData = new FormData();
-    formData.append("title", values.title);
-    formData.append("description", values.description);
-    formData.append("receipt", values.receipt);
-    const res = await fetch("/api/note", {
-      method: "POST",
-      body: formData,
-    });
-    const data = await res.json();
-    console.log(data);
-  } catch (err) {
-    console.log(err);
-  }
-};
 
 const defFormVal = {
   title: "",
   description: "",
-  receipt: undefined,
+  receiptFile: undefined,
 };
 
 // NewNotesForm
 export default function NewNotesForm() {
   const router = useRouter();
 
-  // 1. Define your form.
+  // Define form.
   const form = useForm<NewNotesFormType>({
     resolver: zodResolver(NewNotesFormSchema),
     defaultValues: defFormVal,
   });
 
-  // 2. Submit your form.
+  // fileInputRef is patch used to reset the file input
+  const fileInputRef = useRef<(() => void) | HTMLInputElement | null>(null);
+
+  // formReset reset form and file input
+  const formReset = () => {
+    if (fileInputRef.current) {
+      if (fileInputRef.current instanceof HTMLInputElement) {
+        fileInputRef.current.value = "";
+      }
+    }
+    form.reset();
+  };
+
+  // onSubmit handles form control and post and handle data.
   const onSubmit = async (values: NewNotesFormType) => {
-    console.log(values);
-    form.control._disableForm(true);
-    // TODO: prepare the transaction object
+    try {
+      form.control._disableForm(true);
+      // TODO: proper error handling
+      const nwNote: Note = {
+        title: values.title,
+        description: values.description,
+        receiptFile: values.receiptFile,
+      };
+      
+      const result = await createNewNotesRequest(nwNote);
+      console.log(result);
+      
+      // TODO: send the response to the server
+      toast("Notes has been created.");
+      formReset();
+  
+      form.control._disableForm(false);
+  
+      // router.push("/tools/expense-tracker");
 
-    console.log(values.receipt);
+    } catch (err) {
 
-    await createNewNotes(values);
-
-    // TODO: send the response to the server
-    toast("Notes has been created.");
-    form.reset(defFormVal);
-
-    form.control._disableForm(false);
-
-    // router.push("/tools/expense-tracker");
+      form.control._disableForm(false);
+      console.log(err);
+    }
+   
   };
 
   // 3. Render your form.
   const onReset = () => {
     form.control._disableForm(false);
-    form.reset();
+    formReset();
   };
 
   return (
@@ -143,18 +151,21 @@ export default function NewNotesForm() {
         {/* file upload */}
         <FormField
           control={form.control}
-          name="receipt"
+          name="receiptFile"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-base">Receipt</FormLabel>
+              <FormLabel className="text-base">receiptFile</FormLabel>
               <FormControl>
-                <input
+                <Input
                   type="file"
                   onChange={(e) => field.onChange(e.target.files)}
                   onBlur={field.onBlur}
                   name={field.name}
                   disabled={field.disabled}
-                  ref={field.ref}
+                  ref={(e) => {
+                    field.ref(e);
+                    fileInputRef.current = e;
+                  }}
                 />
               </FormControl>
               <FormMessage />

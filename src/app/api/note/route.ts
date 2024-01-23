@@ -27,7 +27,7 @@ const NewNotesFormSchema = z.object({
     message: "description must be at least 3 characters.",
   }),
 
-  receipt: z
+  receiptFile: z
     .custom<File>()
     .refine((file) => {
       return file.size <= 1 * 1024 * 1024;
@@ -47,16 +47,16 @@ export async function POST(request: NextRequest) {
     // 1. parse payload
     const newNotes = NewNotesFormSchema.parse(formPayload);
 
-    const note: Note = {
-      uid: "uid-123",
-      title: newNotes.title,
-      description: newNotes.description,
-      completed: false,
-      receipt: "",
-      done: false,
-    };
+    console.log("new-NOtes:",newNotes);
+    // const note: Note = {
+    //   uid: "uid-123",
+    //   title: newNotes.title,
+    //   description: newNotes.description,
+    //   completed: false,
+    //   receipt: "",
+    // };
 
-    await insertNote(note, "uid-123");
+    // await insertNote(note, "uid-123");
 
     // 2. input sanitization
 
