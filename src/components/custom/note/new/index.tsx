@@ -115,6 +115,7 @@ export default function NewNotesForm({ onNoteCreate }: NewNotesFormProps) {
         toast(result.message);
         // TODO: navigate to newly created note
         router.push(`/note/${result.id}`);
+        router.refresh();
       } else {
         form.control._disableForm(false);
 

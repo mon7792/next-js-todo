@@ -3,10 +3,16 @@ import { getNotes, getNote } from "@/driver/db/note";
 import { unstable_cache } from "next/cache";
 
 // TODO: associate the cache with the user
-export const getCachedNotes = unstable_cache(async () => {
-  console.log("cache miss");
-  return await getNotes();
-}, ["notes"]);
+export const getCachedNotes = unstable_cache(
+  async () => {
+    console.log("cache miss");
+    return await getNotes();
+  },
+  ["notes"],
+  {
+    tags: ["notes"],
+  }
+);
 
 export const getCachedNote = async (uid: string) => {
   const getCachedNotes = unstable_cache(
@@ -14,7 +20,10 @@ export const getCachedNote = async (uid: string) => {
       console.log("cache miss");
       return await getNote(uid, "userUID");
     },
-    ["note", uid]
+    ["note", uid],
+    {
+      tags: ["note", uid],
+    }
   );
 
   return await getCachedNotes(uid);
