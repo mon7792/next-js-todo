@@ -13,6 +13,7 @@ export default function NoteList({ notes }: NoteListProps) {
           uid={note.uid as string}
           title={note.title}
           description={note.description}
+          completed={note.completed as boolean}
         />
       ))}
     </div>

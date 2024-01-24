@@ -17,10 +17,7 @@ type NoteDetailProps = {
 export default function NoteDetail({ note }: NoteDetailProps) {
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{note.title}</CardTitle>
-      </CardHeader>
-      <CardContent>
+      <CardContent className="p-4">
         <CardDescription>{note.description}</CardDescription>
         {note.receipt && note.receipt.length > 0 && (
           <Image

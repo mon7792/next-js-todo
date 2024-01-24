@@ -12,15 +12,8 @@ type NoteDetailSectionProps = {
 
 export default function NoteDetailSection({ note }: NoteDetailSectionProps) {
   return (
-    <>
-      <Link href="/">
-        <Button className="text-lg" size="icon">
-          <ArrowLeft />
-        </Button>
-      </Link>
-      <div className="mt-4">
-        <NoteDetail note={note} />
-      </div>
-    </>
+    <div className="mt-4">
+      <NoteDetail note={note} />
+    </div>
   );
 }
