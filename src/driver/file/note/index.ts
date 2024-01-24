@@ -1,11 +1,14 @@
 "use server";
 import s3Client from "@/dependency/file";
+import { BaseError } from "@/utils/error/app";
 import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { NextResponse } from "next/server";
 import { Readable } from "stream";
 
 // todo: move this to env
 const bucketName = "next-js-todo";
+
+const errfileNoteFound = "file not found";
 
 // uploadNoteReceipt uploads note receipt to s3
 // TODO: proper way to handle error
@@ -34,25 +37,29 @@ export const downloadNoteReceipt = async (
   fsNm: string,
   response: NextResponse
 ) => {
-  const data = (
-    await s3Client.send(
-      new GetObjectCommand({ Bucket: bucketName, Key: "az.png" })
-    )
-  ).Body as Readable;
+  const resp = await s3Client.send(
+    new GetObjectCommand({ Bucket: bucketName, Key: fsNm })
+  );
 
-  // console.log(data);
-  if (!data) {
-    throw new Error("No data found");
+  if (resp.$metadata.httpStatusCode !== 200) {
+    console.error(errfileNoteFound, ":", fsNm);
+    throw BaseError(404, errfileNoteFound);
   }
 
+  // content type, content length
+  const fsType = resp.ContentType;
+  const fsLen = resp.ContentLength;
+  console.log(fsType, fsLen); 
+
+  const data = resp.Body as Readable;
   const dr = streamFile(data);
 
   const res = new NextResponse(dr, {
     status: 200,
     headers: new Headers({
-      "content-disposition": `attachment; filename=az.png`,
-      "content-type": "image/png",
-      // "content-length": stats.size + "",
+      "content-disposition": `attachment; filename=${fsNm}`,
+      "content-type": `${fsType}`,
+      "content-length": `${fsLen}`,
     }),
   });
 
