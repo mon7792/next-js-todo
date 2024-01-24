@@ -1,5 +1,6 @@
 import { Note } from "@/types/note";
 import { pool } from "@/dependency/db";
+import { BaseError } from "@/utils/error/app";
 
 const insertNoteQry = `
 insert into todo (uid, title, description, receipt, user_uid)
@@ -20,7 +21,8 @@ where uid = $1
 
 // error
 const errInsertNote = new Error("Note not inserted");
-const errNoteNotFound = new Error("Note not found");
+const errNoteNotFound = "Note not found";
+const dbErr= "Database error: operation failed";
 
 export const insertNote = async (note: Note, userUID: string) => {
   const client = await pool.connect();
@@ -57,7 +59,8 @@ export const getNote = async (uid: string, userUID: string): Promise<Note> => {
   try {
     const res = await client.query(getNoteQry, [uid]);
     if (res.rowCount !== 1) {
-      throw errNoteNotFound;
+      console.error(`Note not found. uid: ${uid} userUID: ${userUID}`);
+      throw BaseError(404, errNoteNotFound);
     }
 
     const note: Note = {
@@ -69,6 +72,9 @@ export const getNote = async (uid: string, userUID: string): Promise<Note> => {
     };
 
     return note;
+  } catch (err) {
+    console.error(err);
+    throw BaseError(500, dbErr);
   } finally {
     client.release();
   }
