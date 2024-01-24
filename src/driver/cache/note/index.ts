@@ -18,7 +18,16 @@ export const getCachedNote = async (uid: string) => {
   const getCachedNotes = unstable_cache(
     async (uid) => {
       console.log("cache miss");
-      return await getNote(uid, "userUID");
+
+      const note = await getNote(uid, "userUID");
+
+      // TODO: move this to insertion layer
+      if (note.receipt && note.receipt.trim() !== "") {
+        note.receipt = `/api/note/receipt/${note.receipt}`;
+      }
+      console.log(note.receipt);
+
+      return note;
     },
     ["note", uid],
     {

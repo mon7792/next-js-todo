@@ -8,7 +8,7 @@ values ($1, $2, $3, $4, $5);
 `;
 
 const getNoteListQry = `
-select uid, title, description
+select uid, title, description, completed, receipt
 from todo
 order by created_at desc
 `;
@@ -22,7 +22,7 @@ where uid = $1
 // error
 const errInsertNote = new Error("Note not inserted");
 const errNoteNotFound = "Note not found";
-const dbErr= "Database error: operation failed";
+const dbErr = "Database error: operation failed";
 
 export const insertNote = async (note: Note, userUID: string) => {
   const client = await pool.connect();
@@ -44,11 +44,27 @@ export const insertNote = async (note: Note, userUID: string) => {
   }
 };
 
-export const getNotes = async () => {
+export const getNotes = async (): Promise<Note[]> => {
   const client = await pool.connect();
   try {
     const res = await client.query(getNoteListQry);
-    return res.rows;
+    if (res.rowCount === 0) {
+      return [];
+    }
+
+    const notes: Note[] = res.rows.map((row) => {
+      return {
+        uid: row.uid,
+        title: row.title,
+        description: row.description,
+        receipt: row.receipt,
+        completed: row.completed,
+      };
+    });
+    return notes;
+  } catch (err) {
+    console.error(err);
+    throw BaseError(500, dbErr);
   } finally {
     client.release();
   }

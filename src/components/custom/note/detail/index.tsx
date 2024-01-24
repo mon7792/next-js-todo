@@ -22,7 +22,14 @@ export default function NoteDetail({ note }: NoteDetailProps) {
       </CardHeader>
       <CardContent>
         <CardDescription>{note.description}</CardDescription>
-        <Image width={200} height={200} src="/api/note/receipt" alt={note.title} />
+        {note.receipt && note.receipt.length > 0 && (
+          <Image
+            width={200}
+            height={200}
+            src={note.receipt as string}
+            alt={note.title}
+          />
+        )}
       </CardContent>
     </Card>
   );
