@@ -19,6 +19,11 @@ from todo
 where uid = $1
 `;
 
+const deleteNoteQry = `
+delete from todo
+where uid = $1
+`;
+
 // error
 const errInsertNote = new Error("Note not inserted");
 const errNoteNotFound = "Note not found";
@@ -95,3 +100,20 @@ export const getNote = async (uid: string, userUID: string): Promise<Note> => {
     client.release();
   }
 };
+
+
+export const deleteNote = async (uid: string, userUID: string) => {
+  const client = await pool.connect();
+  try {
+    const res = await client.query(deleteNoteQry, [uid]);
+    if (res.rowCount !== 1) {
+      console.error(`Note not found. uid: ${uid} userUID: ${userUID}`);
+      throw BaseError(404, errNoteNotFound);
+    }
+  } catch (err) {
+    console.error(err);
+    throw BaseError(500, dbErr);
+  } finally {
+    client.release();
+  }
+}

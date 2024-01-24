@@ -8,6 +8,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Pencil, Trash } from "lucide-react";
+import { DeleteDialogBtn } from "@/components/custom/note/del-dialog";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id as string;
@@ -40,16 +41,16 @@ export default async function Page({ params }: { params: { id: string } }) {
         <div className="flex gap-2">
           <Link href={`/note/${id}/edit`}>
             <Button size="icon" variant="outline">
-            <Pencil />
+              <Pencil />
             </Button>
           </Link>
-          <Link href={`/note/${id}/delete`}>
+          {/* <Link href={`/note/${id}/delete`}>
             <Button size="icon" variant="destructive"><Trash /></Button>
-          </Link>
-          </div>
+          </Link> */}
+          <DeleteDialogBtn uid={id} />
+        </div>
       </div>
       <NoteDetailSection note={note} />
     </div>
   );
 }
-
