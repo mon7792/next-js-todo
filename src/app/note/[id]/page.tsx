@@ -9,6 +9,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Pencil, Trash } from "lucide-react";
 import { DeleteDialogBtn } from "@/components/custom/note/del-dialog";
+import EditNoteSection from "@/components/section/note/edit";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id as string;
@@ -39,11 +40,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
         {/* edit and delete button */}
         <div className="flex gap-2">
-          <Link href={`/note/${id}/edit`}>
-            <Button size="icon" variant="outline">
-              <Pencil />
-            </Button>
-          </Link>
+          <EditNoteSection note={note} />
           {/* <Link href={`/note/${id}/delete`}>
             <Button size="icon" variant="destructive"><Trash /></Button>
           </Link> */}
